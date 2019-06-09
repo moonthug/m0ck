@@ -1,0 +1,10 @@
+- request:
+    body:
+      first_name: Test
+  response:
+    statusCode: 200
+    body:
+      data:
+        id: 0
+        first_name: Test
+        last_name: User
