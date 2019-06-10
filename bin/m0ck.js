@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 const yargs = require('yargs');
 
-const { M0ck } = require('../lib');
+const { M0ck } = require('../dist');
 
 // Args
 const argv = yargs
