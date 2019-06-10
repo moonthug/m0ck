@@ -17,3 +17,29 @@
         first_name: Test
         last_name: User
         group_id: 0
+
+- description: "Get user by auth"
+  request:
+    header:
+      authorization: Bearer Test
+  response:
+    statusCode: 200
+    body:
+      data:
+        id: 0
+        first_name: Test
+        last_name: User Bearer
+        group_id: 0
+
+- description: "Get user by auth"
+  request:
+    header:
+      authorization: Bearer Test2
+  response:
+    statusCode: 200
+    body:
+      data:
+        id: 0
+        first_name: Test
+        last_name: User Bearer2
+        group_id: 0

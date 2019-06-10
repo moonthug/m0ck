@@ -11,6 +11,7 @@ const debug = require('debug')('m0ck');
 
 export interface M0ckOptions {
   srcDir: string;
+  host?: string;
   port?: number;
 }
 
@@ -27,6 +28,7 @@ export class M0ck {
     this.options = options;
 
     this.server = new Server({
+      host: options.host || '0.0.0.0',
       port: options.port || 8080,
       handler: this.routeHandler.bind(this)
     });
@@ -44,9 +46,10 @@ export class M0ck {
         this.m0ckRoutes.add(m0ckRoute);
       });
     });
+    console.log(`Loaded ${files.length} mock files [${this.m0ckRoutes.routes.length} routes]`);
 
     this.server.listen();
-    debug('Server listening');
+    console.log(`Server started at: ${this.server.host}:${this.server.port}`);
   }
 
   /**
@@ -69,6 +72,9 @@ export class M0ck {
       ctx.body = 'Not Mocked';
       return;
     }
+
+    console.log(`Route matched: ${ctx.method} ${ctx.path} [${m0ckRoute.description}]`);
+
 
     ctx.body = m0ckRoute.response.body;
   }
@@ -130,7 +136,7 @@ export class M0ck {
       try {
         await m0ckFile.loadFile();
       } catch (e) {
-        debug('Could not load m0ck file: %s', filePath);
+        console.log(`Could not load m0ck file: ${filePath}`);
         throw e;
       }
 

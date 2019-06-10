@@ -13,6 +13,11 @@ export interface HTTPRequest {
   path: string;
 }
 
+interface ScoredM0ckRoute {
+  score: number;
+  m0ckRoute: M0ckRoute;
+}
+
 export class M0ckRouteList {
   routes: Array<M0ckRoute>;
 
@@ -48,12 +53,24 @@ export class M0ckRouteList {
       return null;
     }
 
-    const requestMatches = routeMatches.filter((m0ckRoute: M0ckRoute) => {
-      return m0ckRoute.match(request);
-    });
+    const requestMatches = routeMatches
+      .map((m0ckRoute: M0ckRoute): ScoredM0ckRoute => {
+        const score = m0ckRoute.match(request);
+        return { m0ckRoute, score };
+      })
+      .filter((scoredM0ckRoute: ScoredM0ckRoute) => {
+        return scoredM0ckRoute.score !== 0;
+      })
+      .sort((a: ScoredM0ckRoute, b: ScoredM0ckRoute) => {
+        return b.score - a.score;
+      });
+
+    if (requestMatches.length === 0) {
+      return null;
+    }
 
     debug('Found %d request matches', requestMatches.length);
 
-    return requestMatches[0];
+    return requestMatches[0].m0ckRoute;
   }
 }

@@ -2,7 +2,7 @@ import * as Joi from 'Joi';
 import * as Koa from 'koa';
 
 import { HTTPMethod } from './HTTPMethod';
-import {HTTPRequest} from "./M0ckRouteList";
+import { HTTPRequest } from "./M0ckRouteList";
 
 const debug = require('debug')('M0ckRoute');
 
@@ -59,7 +59,7 @@ export class M0ckRoute implements M0ckRouteProperties {
   async loadFromFileData (data: any) {
     const values: any = await this.validate(data);
 
-    this.description = values.description;
+    this.description = values.description || 'No Description';
     this.operationId = values.operationId;
     this.request = values.request;
     this.response = values.response;
@@ -84,48 +84,59 @@ export class M0ckRoute implements M0ckRouteProperties {
    *
    * @param request
    */
-  match (request: HTTPRequest): boolean {
-    if (this.request.headers) {
-      if (!this.matchObject(this.request.headers, request.headers)) {
-        return false;
-      }
+  match (request: HTTPRequest): number {
+    // @TODO make matching better. Current is too basic
+
+    let match = 0;
+
+    if (!this.request) {
+      match++;
+      return match;
+    }
+
+    if (this.request.header) {
+      match++;
+      match += this.scoreObjectMatch(this.request.header, request.headers);
     }
 
     if (this.request.query) {
-      if (!this.matchObject(this.request.query, request.query)) {
-        return false;
-      }
+      match++;
+      match += this.scoreObjectMatch(this.request.query, request.query);
     }
 
     if (this.request.body) {
-      if (!this.matchObject(this.request.body, request.body)) {
-        return false;
-      }
+      match++;
+      match += this.scoreObjectMatch(this.request.body, request.body);
     }
 
-    return true;
+    return match;
   }
 
   /**
    *
    * @param object1
    * @param object2
+   * @param matchedProperties
    */
-  matchObject (object1: any, object2: any): boolean {
+  scoreObjectMatch (object1: any, object2: any, matchedProperties: number = 0): number {
     for (const key in object1) {
-      if (object1[key] !== object2[key]) return false;
+      if (Object.prototype.hasOwnProperty.call(object1, key) !== Object.prototype.hasOwnProperty.call(object2, key)) {
+        return matchedProperties;
+      }
 
       if (typeof (object1[key]) === 'object') {
-        if (!this.matchObject(object1[key], object2[key])) {
-          return false;
+        if (!this.scoreObjectMatch(object1[key], object2[key], matchedProperties)) {
+          return matchedProperties;
         }
       } else {
         if (object1[key] !== object2[key]) {
-          return false;
+          return matchedProperties;
+        } else {
+          matchedProperties++;
         }
       }
     }
 
-    return true;
+    return matchedProperties;
   }
 }
