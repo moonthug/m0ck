@@ -1,4 +1,4 @@
-const { M0ck } = require('../lib');
+const { M0ck } = require('../dist');
 
 const debug = require('debug')('m0ck');
 
