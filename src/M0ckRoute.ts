@@ -1,8 +1,7 @@
-import * as Joi from 'Joi';
-import * as Koa from 'koa';
+import * as Joi from 'joi';
 
 import { HTTPMethod } from './HTTPMethod';
-import { HTTPRequest } from "./M0ckRouteList";
+import { HTTPRequest } from './M0ckRouteList';
 
 const debug = require('debug')('M0ckRoute');
 
