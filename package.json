@@ -13,6 +13,7 @@
     "start:example": "node ./example/index.js",
     "start:ts:example": "node ./dist/example.js",
     "build": "npm run clean && tsc",
+    "prepublishOnly": "npm run build",
     "tslint": "tslint -c tslint.json -p tsconfig.json",
     "watch": "nodemon --exec npm run start"
   },
