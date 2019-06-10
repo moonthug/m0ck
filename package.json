@@ -21,7 +21,8 @@
     "js-yaml": "^3.13.1",
     "koa": "^2.7.0",
     "koa-bodyparser": "^4.2.1",
-    "recursive-readdir": "^2.2.2"
+    "recursive-readdir": "^2.2.2",
+    "yargs": "^13.2.4"
   },
   "devDependencies": {
     "@types/debug": "^4.1.4",

@@ -1,5 +1,17 @@
+import * as Koa from 'koa';
+
 import { M0ckRoute } from './M0ckRoute';
-import { HTTPMethod } from './HTTPMethod';
+import {HTTPMethod, mapStringToHTTPMethod} from './HTTPMethod';
+
+const debug = require('debug')('M0ckRouteList');
+
+export interface HTTPRequest {
+  headers?: any;
+  query?: any;
+  body?: any;
+  method: HTTPMethod;
+  path: string;
+}
 
 export class M0ckRouteList {
   routes: Array<M0ckRoute>;
@@ -21,18 +33,27 @@ export class M0ckRouteList {
 
   /**
    *
-   * @param method
-   * @param path
+   * @param request
    */
-  match (method: HTTPMethod, path: string): M0ckRoute {
-    const match = this.routes.find((m0ckRoute: M0ckRoute) => {
-      return m0ckRoute.method === method && m0ckRoute.route === path;
+  match (request: HTTPRequest): M0ckRoute {
+
+    // Match path and Method
+    const routeMatches = this.routes.filter((m0ckRoute: M0ckRoute) => {
+      return m0ckRoute.method === request.method && m0ckRoute.route === request.path;
     });
 
-    if (!match) {
+    debug('Found %d route matches for %s %s', routeMatches.length, request.method, request.path);
+
+    if (routeMatches.length === 0) {
       return null;
     }
 
-    return match;
+    const requestMatches = routeMatches.filter((m0ckRoute: M0ckRoute) => {
+      return m0ckRoute.match(request);
+    });
+
+    debug('Found %d request matches', requestMatches.length);
+
+    return requestMatches[0];
   }
 }

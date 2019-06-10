@@ -4,8 +4,8 @@ import { Context } from 'koa';
 import { M0ckFile } from './M0ckFile';
 import { Server } from './Server';
 import { M0ckRouteList } from './M0ckRouteList';
+import { M0ckRoute } from './M0ckRoute';
 import { mapStringToHTTPMethod } from './HTTPMethod';
-import {M0ckRoute} from "./M0ckRoute";
 
 const debug = require('debug')('m0ck');
 
@@ -55,7 +55,13 @@ export class M0ck {
    * @param next
    */
   private async routeHandler (ctx: Context, next: Function): Promise<any> {
-    const m0ckRoute: M0ckRoute = this.m0ckRoutes.match(mapStringToHTTPMethod(ctx.req.method), ctx.req.url);
+    const m0ckRoute: M0ckRoute = this.m0ckRoutes.match({
+      headers: ctx.headers,
+      query: ctx.query,
+      body: ctx.body,
+      method: mapStringToHTTPMethod(ctx.method),
+      path: ctx.path
+    });
 
     if (!m0ckRoute) {
       debug('Route %s %s not mocked', ctx.req.method, ctx.req.url);
@@ -123,9 +129,9 @@ export class M0ck {
 
       try {
         await m0ckFile.loadFile();
-      } catch {
+      } catch (e) {
         debug('Could not load m0ck file: %s', filePath);
-        continue;
+        throw e;
       }
 
       files.push(m0ckFile);
