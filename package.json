@@ -1,9 +1,11 @@
 {
-  "name": "m0ck",
+  "name": "@moonthug/m0ck",
   "version": "1.0.0",
-  "description": "t0d0",
+  "description": "m0ck",
   "author": "alex <alex@polyglot.rodeo>",
   "license": "ISC",
+  "preferGlobal": true,
+  "bin": "bin/m0ck.js",
   "scripts": {
     "clean": "rm -rf ./lib",
     "start": "node ./dist/index.js",
