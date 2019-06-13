@@ -26,6 +26,7 @@ const loadYAMLFile = async (filePath: string): Promise<any> => {
 export class M0ckFile {
   filePath: string;
   srcDir: string;
+
   m0ckRoutes: Array<M0ckRoute>;
 
   /**
@@ -63,8 +64,13 @@ export class M0ckFile {
     // @TODO Support JSON?
     let data: any;
     try {
-      data = await loadYAMLFile(this.filePath);
-      data = Array.isArray(data) ? data : [data];
+      let yamlData = await loadYAMLFile(this.filePath);
+
+      if (yamlData.hasOwnProperty('routes')) {
+        yamlData = yamlData.routes;
+      }
+
+      data = Array.isArray(yamlData) ? yamlData : [yamlData];
     } catch (e) {
       debug(`Could not load YAML file '%s'`, this.filePath);
       throw e;
