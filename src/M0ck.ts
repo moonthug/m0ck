@@ -61,7 +61,7 @@ export class M0ck {
     const m0ckRoute: M0ckRoute = this.m0ckRoutes.match({
       headers: ctx.headers,
       query: ctx.query,
-      body: ctx.body,
+      body: ctx.request.body,
       method: mapStringToHTTPMethod(ctx.method),
       path: ctx.path
     });
