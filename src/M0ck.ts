@@ -58,13 +58,15 @@ export class M0ck {
    * @param next
    */
   private async routeHandler (ctx: Context, next: Function): Promise<any> {
-    const m0ckRoute: M0ckRoute = this.m0ckRoutes.match({
+    const req = {
       headers: ctx.headers,
       query: ctx.query,
       body: ctx.request.body,
       method: mapStringToHTTPMethod(ctx.method),
       path: ctx.path
-    });
+    };
+
+    const m0ckRoute: M0ckRoute = this.m0ckRoutes.match(req);
 
     if (!m0ckRoute) {
       debug('Route %s %s not mocked', ctx.req.method, ctx.req.url);
@@ -73,8 +75,9 @@ export class M0ck {
       return;
     }
 
-    console.log(`Route matched: ${ctx.method} ${ctx.path} [${m0ckRoute.description}]`);
+    debug(`Request: %O`, req);
 
+    console.log(`Route matched: ${ctx.method} ${ctx.path} [${m0ckRoute.description}]`);
 
     ctx.body = m0ckRoute.response.body;
   }
