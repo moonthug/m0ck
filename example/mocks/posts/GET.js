@@ -1,6 +1,4 @@
-const posts = [
-  { id: 1, content: 'hello There' }
-];
+const posts = require('./db');
 
 const getPosts = count => {
   const posts = [];
@@ -13,17 +11,33 @@ const getPosts = count => {
   return posts;
 };
 
-module.exports = {
-  description: 'Get all posts',
-  request: {
-    query: {
-      user: 1
-    }
+module.exports = [
+  {
+    description: 'Get all posts',
+    request: {
+      query: {
+        user: "1"
+      }
+    },
+    response: {
+      statusCode: 200,
+      body: {
+        data: getPosts(5)
+      }
+    },
   },
-  response: {
-    statusCode: 200,
-    body: {
-      data: getPosts(5)
+  {
+    description: 'Get all posts',
+    request: {
+      query: {
+        user: "2"
+      }
+    },
+    response: {
+      statusCode: 200,
+      body: {
+        data: posts
+      }
     }
   }
-};
+];

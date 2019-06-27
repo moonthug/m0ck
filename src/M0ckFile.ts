@@ -28,7 +28,7 @@ const loadYAMLFile = async (filePath: string): Promise<any> => {
 const loadJSFile = async (filePath: string): Promise<any> => {
   const file = await fs.readFile(filePath);
   const fileString = file.toString();
-  return _eval(fileString);
+  return _eval(fileString, filePath, {}, true);
 };
 
 /**
