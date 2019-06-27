@@ -7,7 +7,7 @@ const debug = require('debug')('m0ck');
  * @returns {Promise<void>}
  */
 const main = async () => {
-  const m0ck = new M0ck({ srcDir: './example/mocks', port: 8300 });
+  const m0ck = new M0ck({ srcDir: './example/mocks', port: 9300 });
   await m0ck.startup();
 };
 

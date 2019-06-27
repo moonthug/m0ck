@@ -6,9 +6,10 @@ import * as jsYaml from 'js-yaml';
 import { mapStringToHTTPMethod } from './HTTPMethod';
 import { M0ckRoute } from './M0ckRoute';
 
+const _eval = require('eval');
 const debug = require('debug')('M0ckFile');
 
-export const validExtensions = ['.yaml'];
+export const validExtensions = ['.js', '.yaml'];
 
 /**
  *
@@ -18,6 +19,16 @@ const loadYAMLFile = async (filePath: string): Promise<any> => {
   const file = await fs.readFile(filePath);
   const fileString = file.toString();
   return jsYaml.safeLoad(fileString);
+};
+
+/**
+ *
+ * @param filePath
+ */
+const loadJSFile = async (filePath: string): Promise<any> => {
+  const file = await fs.readFile(filePath);
+  const fileString = file.toString();
+  return _eval(fileString);
 };
 
 /**
@@ -45,7 +56,7 @@ export class M0ckFile {
    *
    */
   async loadFile (): Promise<void> {
-    const extension = path.extname(this.filePath);
+    const extension = path.extname(this.filePath).toLowerCase();
 
     if (validExtensions.indexOf(extension) === -1) {
       debug(`Invalid extension '%s' for file '%s'`, extension, this.filePath);
@@ -64,13 +75,22 @@ export class M0ckFile {
     // @TODO Support JSON?
     let data: any;
     try {
-      let yamlData = await loadYAMLFile(this.filePath);
+      let fileData;
+      switch (extension) {
+        case '.yaml':
+          fileData = await loadYAMLFile(this.filePath);
+          break;
 
-      if (yamlData.hasOwnProperty('routes')) {
-        yamlData = yamlData.routes;
+        case '.js':
+          fileData = await loadJSFile(this.filePath);
+          break;
       }
 
-      data = Array.isArray(yamlData) ? yamlData : [yamlData];
+      if (fileData.hasOwnProperty('routes')) {
+        fileData = fileData.routes;
+      }
+
+      data = Array.isArray(fileData) ? fileData : [fileData];
     } catch (e) {
       debug(`Could not load YAML file '%s'`, this.filePath);
       throw e;
