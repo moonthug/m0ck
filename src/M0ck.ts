@@ -75,7 +75,7 @@ export class M0ck {
       return;
     }
 
-    debug(`Request: %O`, req);
+    // debug(`Request: %O`, req);
 
     console.log(`Route matched: ${ctx.method} ${ctx.path} [${m0ckRoute.description}]`);
 

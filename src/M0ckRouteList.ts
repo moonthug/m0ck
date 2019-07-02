@@ -1,7 +1,7 @@
 import * as Koa from 'koa';
 
 import { M0ckRoute } from './M0ckRoute';
-import {HTTPMethod, mapStringToHTTPMethod} from './HTTPMethod';
+import { HTTPMethod, mapStringToHTTPMethod } from './HTTPMethod';
 
 const debug = require('debug')('M0ckRouteList');
 

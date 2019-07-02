@@ -1,4 +1,5 @@
 import * as Joi from 'joi';
+const fuzzyEqual = require('fuzzy-equal');
 
 import { HTTPMethod } from './HTTPMethod';
 import { HTTPRequest } from './M0ckRouteList';
@@ -85,7 +86,6 @@ export class M0ckRoute implements M0ckRouteProperties {
    */
   match (request: HTTPRequest): number {
     // @TODO make matching better. Current is too basic
-
     let match = 0;
 
     if (!this.request) {
@@ -93,19 +93,22 @@ export class M0ckRoute implements M0ckRouteProperties {
       return match;
     }
 
-    if (this.request.header) {
+    if (this.request.headers) {
       match++;
-      match += this.scoreObjectMatch(this.request.header, request.headers);
+      const res = fuzzyEqual(this.request.headers, request.headers);
+      match += res.similarity;
     }
 
     if (this.request.query) {
       match++;
-      match += this.scoreObjectMatch(this.request.query, request.query);
+      const res = fuzzyEqual(this.request.query, request.query);
+      match += res.similarity;
     }
 
     if (this.request.body) {
       match++;
-      match += this.scoreObjectMatch(this.request.body, request.body);
+      const res = fuzzyEqual(this.request.body, request.body);
+      match += res.similarity;
     }
 
     return match;
