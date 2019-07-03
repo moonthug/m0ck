@@ -11,7 +11,7 @@ export const m0ckRouteSchema = Joi.object({
   operationId: Joi.string(),
   request: Joi.object({
     query: Joi.any(),
-    header: Joi.any(),
+    headers: Joi.any(),
     body: Joi.any()
   }),
   response: Joi.object({
@@ -21,7 +21,7 @@ export const m0ckRouteSchema = Joi.object({
       .min(100)
       .max(600)
       .required(),
-    header: Joi.any(),
+    headers: Joi.any(),
     body: Joi.any()
   })
 });
